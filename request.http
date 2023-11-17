@@ -3,17 +3,26 @@ Content-Type: application/json
 
 {
   "name":"njenien",
-  "email": "jeni.riskaa@gmail.com",
+  "email": "riska.jeen@gmail.com",
   "password": "name",
   "password_confirmation": "name"
 }
 
 ###
-POST http://localhost:3000/api/v1/authenticate/login
+
+POST http://localhost:3000/api/v1/auth/forgot-password
 Content-Type: application/json
 
 {
-  "email": "nameke1@gmail.com",
+    "email": "riska.jeen@gmail.com"
+}
+
+###
+POST http://localhost:3000/api/v1/auth/login
+Content-Type: application/json
+
+{
+  "email": "riska.jeen@gmail.com",
   "password": "name"
 }
 ###

@@ -1,3 +1,4 @@
+
 const nodemailer = require('nodemailer');
 const { google } = require('googleapis');
 const ejs = require('ejs');
@@ -35,6 +36,18 @@ module.exports = {
     },
 
     getHtml: (fileName, data) => {
+        return new Promise((resolve, reject) => {
+            const path = `${__dirname}/../views/templates/${fileName}`;
+
+            ejs.renderFile(path, data, (err, data) => {
+                if (err) {
+                    return reject(err);
+                }
+                return resolve(data);
+            });
+        });
+    },
+    postHtml: (fileName, data) => {
         return new Promise((resolve, reject) => {
             const path = `${__dirname}/../views/templates/${fileName}`;
 

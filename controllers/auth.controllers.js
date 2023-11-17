@@ -4,6 +4,9 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const nodemailer = require('../utils/nodemailer');
 const { JWT_SECRET_KEY } = process.env;
+const generateResetPasswordToken = (email) => {
+  return jwt.sign({ email }, JWT_SECRET_KEY, { expiresIn: '1h' });
+};
 
 module.exports = {
     register: async (req, res, next) => {
@@ -123,5 +126,87 @@ module.exports = {
 
             res.json({ status: true, message: 'OK', err: null, data: updated });
         });
+    },
+    // Forgot Password
+    forgotPassword: async (req, res, next) => {
+      try {
+        const { email } = req.body;
+        const user = await prisma.user.findUnique({ where: { email } });
+    
+        if (!user) {
+          return res.status(404).json({
+            status: false,
+            message: 'User not found',
+            err: null,
+            data: null
+          });
+        }
+    
+        // Buat token untuk reset password
+        const token = jwt.sign({ email: user.email }, JWT_SECRET_KEY, { expiresIn: '1h' });
+    
+        // Kirim email dengan link untuk reset password
+        const resetPasswordLink = `http://localhost:3000/api/v1/auth/reset-password/${token}`;
+        const html = await nodemailer.postHtml('reset-password-email.ejs', { resetPasswordLink });
+        await nodemailer.sendEmail(email, 'Reset Password', html);
+    
+        return res.status(200).json({
+          status: true,
+          message: 'Reset password link sent successfully',
+          err: null,
+          data: null
+        });
+      } catch (err) {
+        next(err);
+      }
+    },
+// Menampilkan halaman reset password
+showResetPasswordPage: (req, res) => {
+  const { token } = req.params;
+  res.render('reset-password-page', { token });
+},
+
+// Reset Password
+resetPassword: async (req, res, next) => {
+  try {
+    const { token, newPassword } = req.body;
+
+    if (!token || !newPassword) {
+      return res.status(400).json({
+        status: false,
+        message: 'Token or new password is missing',
+        err: null,
+        data: null
+      });
     }
+
+    jwt.verify(token, JWT_SECRET_KEY, async (err, decoded) => {
+      if (err) {
+        return res.status(400).json({
+          status: false,
+          message: 'Invalid or expired token',
+          err: err.message,
+          data: null
+        });
+      }
+
+      const { email } = decoded;
+      const encryptedPassword = await bcrypt.hash(newPassword, 10);
+
+      await prisma.user.update({
+        where: { email },
+        data: { password: encryptedPassword }
+      });
+
+      return res.status(200).json({
+        status: true,
+        message: 'Password reset successfully',
+        err: null,
+        data: null
+      });
+    });
+  } catch (err) {
+    next(err);
+  }
+}
 };
