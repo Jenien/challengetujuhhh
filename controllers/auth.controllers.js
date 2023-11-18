@@ -4,9 +4,9 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const nodemailer = require('../utils/nodemailer');
 const { JWT_SECRET_KEY } = process.env;
-const generateResetPasswordToken = (email) => {
-  return jwt.sign({ email }, JWT_SECRET_KEY, { expiresIn: '1h' });
-};
+// const generateResetPasswordToken = (email) => {
+//   return jwt.sign({ email }, JWT_SECRET_KEY, { expiresIn: '1h' });
+// };
 
 module.exports = {
     register: async (req, res, next) => {
@@ -146,8 +146,8 @@ module.exports = {
         const token = jwt.sign({ email: user.email }, JWT_SECRET_KEY, { expiresIn: '1h' });
     
         // Kirim email dengan link untuk reset password
-        const resetPasswordLink = `http://localhost:3000/api/v1/auth/reset-password/${token}`;
-        const html = await nodemailer.postHtml('reset-password-email.ejs', { resetPasswordLink });
+        const resetPasswordLink = `http://localhost:3000/api/v1/auth/reset-password?token=${token}`;
+        const html = await nodemailer.getHtml('reset-password-email.ejs', { resetPasswordLink });
         await nodemailer.sendEmail(email, 'Reset Password', html);
     
         return res.status(200).json({
@@ -169,8 +169,10 @@ showResetPasswordPage: (req, res) => {
 // Reset Password
 resetPassword: async (req, res, next) => {
   try {
-    const { token, newPassword } = req.body;
-
+    const { newPassword } = req.body;
+    const token = req.query.token;
+    console.log('token=',token);
+    console.log('pass=',newPassword);
     if (!token || !newPassword) {
       return res.status(400).json({
         status: false,
@@ -180,33 +182,35 @@ resetPassword: async (req, res, next) => {
       });
     }
 
-    jwt.verify(token, JWT_SECRET_KEY, async (err, decoded) => {
-      if (err) {
-        return res.status(400).json({
-          status: false,
-          message: 'Invalid or expired token',
-          err: err.message,
-          data: null
-        });
-      }
+    const decoded = jwt.verify(token, JWT_SECRET_KEY);
+    const { email } = decoded;
 
-      const { email } = decoded;
-      const encryptedPassword = await bcrypt.hash(newPassword, 10);
+    const encryptedPassword = await bcrypt.hash(newPassword, 10);
 
-      await prisma.user.update({
-        where: { email },
-        data: { password: encryptedPassword }
-      });
+    // Gunakan `update` dengan `where` yang sesuai dengan email
+    await prisma.user.update({
+      where: {
+        email: email, // pastikan ini adalah nama kolom di tabel
+      },
+      data: {
+        password: encryptedPassword,
+      },
+    });
 
-      return res.status(200).json({
-        status: true,
-        message: 'Password reset successfully',
-        err: null,
-        data: null
-      });
+    return res.status(200).json({
+      status: true,
+      message: 'Password reset successfully',
+      err: null,
+      data: null
     });
   } catch (err) {
-    next(err);
+    return res.status(400).json({
+      status: false,
+      message: 'Error resetting password',
+      err: err.message,
+      data: null
+    });
   }
 }
+
 };

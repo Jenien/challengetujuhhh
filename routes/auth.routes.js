@@ -21,9 +21,11 @@ router.post('/forgot-password', forgotPassword);
 // Tampilkan halaman reset password
 router.get('/reset-password/:token', showResetPasswordPage);
 
-// Melakukan reset password (melalui POST)
-// router.post('/reset-password', resetPassword);
-router.post('/reset-password', (req, res) => {
+router.post('/reset-password', resetPassword ,(req, res) => {
+let { token } = req.query;
+    res.render('reset-password-page', { token });
+});
+router.get('/reset-password', (req, res) => {
     let { token } = req.query;
     res.render('reset-password-page', { token });
 });

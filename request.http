@@ -3,18 +3,18 @@ Content-Type: application/json
 
 {
   "name":"njenien",
-  "email": "riska.jeen@gmail.com",
+  "email": "xenes38278@bikedid.com",
   "password": "name",
   "password_confirmation": "name"
 }
 
 ###
-
+ 
 POST http://localhost:3000/api/v1/auth/forgot-password
 Content-Type: application/json
 
 {
-    "email": "riska.jeen@gmail.com"
+    "email": "xenes38278@bikedid.com"
 }
 
 ###
@@ -22,8 +22,8 @@ POST http://localhost:3000/api/v1/auth/login
 Content-Type: application/json
 
 {
-  "email": "riska.jeen@gmail.com",
-  "password": "name"
+  "email": "xenes38278@bikedid.com",
+  "password": "oiya"
 }
 ###
 GET http://localhost:3000
