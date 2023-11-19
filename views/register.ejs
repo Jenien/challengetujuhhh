@@ -1,12 +1,11 @@
-<!-- register.ejs -->
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <title>Register</title>
+    <script src="/socket.io/socket.io.js"></script>
 </head>
-<body>
+<>
     <h2>Register</h2>
     <form id="registerForm">
         <label for="registerName">Name:</label>
@@ -23,8 +22,22 @@
         
         <button type="submit">Register</button>
     </form>
-
+    <form>
+        <p> </p>
+    <div id="notificationContainer"></div>
+    </form>
     <script>
+        const socket = io(); 
+
+   
+        socket.on('notification', (notificationData) => {
+            
+            const notificationContainer = document.getElementById('notificationContainer');
+            const newNotification = document.createElement('div');
+            newNotification.textContent = 'ini Notifikasi :  ' + notificationData.message;
+            notificationContainer.appendChild(newNotification);
+        });
+
         const handleRegisterSubmit = async (event) => {
             event.preventDefault();
             const registerName = document.getElementById('registerName').value;
@@ -38,15 +51,29 @@
                     headers: {
                         'Content-Type': 'application/json',
                     },
-                    body: JSON.stringify({ name: registerName, email: registerEmail, password: registerPassword, password_confirmation: confirmPassword })
+                    body: JSON.stringify({
+                        name: registerName,
+                        email: registerEmail,
+                        password: registerPassword,
+                        password_confirmation: confirmPassword
+                    })
                 });
 
                 const data = await response.json();
                 console.log(data);
-                alert(data.message); // Tampilkan pesan hasil dari server
-                } catch (error) {
-                    console.error('Error:', error);
+                if (data.status) {
+                    alert(data.message); 
+                    const notificationData = {
+                        type: 'registration',
+                        message: 'Selamat, akun baru sudah dibuat. Silahkan cek email untuk Veripikasi!!!!',
+                    };
+                    socket.emit('notification', notificationData);
+                } else {
+                    alert(data.message); 
                 }
+            } catch (error) {
+                console.error('Error:', error);
+            }
         };
 
         document.getElementById('registerForm').addEventListener('submit', handleRegisterSubmit);

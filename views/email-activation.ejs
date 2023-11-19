@@ -1,8 +1,55 @@
-<h1>Hi, Friend!!
-</h1>
-<p>we're ready to activate your email, click activate button below.</p>
-<form action="/api/v1/auth/email-activation?token=<%=token%>" method="post">
-    <div>
-        <input type="submit" value="Activate">
-    </div>
-</form>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Activate</title>
+    <script src="/socket.io/socket.io.js"></script>
+</head>
+<body>
+    <h1>Hi, Friend!!</h1>
+    <p>we're ready to activate your email, click activate button below.</p>
+    <form id="activationForm" action="/api/v1/auth/email-activation?token=<%=token%>" method="post">
+        <div>
+            <input type="submit" value="Activate">
+        </div>
+    </form>
+    <div id="notificationContainer"></div>
+    <script>
+        const socket = io();
+
+        socket.on('notification', (notificationData) => {
+            const notificationContainer = document.getElementById('notificationContainer');
+            const newNotification = document.createElement('div');
+            newNotification.textContent = 'Notification: ' + notificationData.message;
+            notificationContainer.appendChild(newNotification);
+        });
+
+        document.getElementById('activationForm').addEventListener('submit', async (event) => {
+            event.preventDefault();
+
+            try {
+                const response = await fetch('/api/v1/auth/email-activation?token=<%=token%>', {
+                    method: 'POST'
+        
+                });
+
+                const data = await response.json();
+                console.log(data);
+
+                if (data.status) {
+                    alert(data.message); 
+                    const notificationData = {
+                        type: 'activate',
+                        message: 'Congratulations, your account has been activated. Please login!',
+                    };
+                    socket.emit('notification', notificationData);
+                } else {
+                    alert(data.message); 
+                }
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        });
+    </script>
+</body>
+</html>

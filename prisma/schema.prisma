@@ -15,14 +15,4 @@ model User {
   email       String  @unique
   password    String
   is_verified Boolean @default(false)
-  artworks Artwork[]
-}
-model Artwork {
-  id Int @id @default(autoincrement())
-  title String?
-  description String?
-  imageArt String?
-  fileId String? @unique 
-  userId Int
-  user User @relation(fields: [userId], references: [id])
 }
