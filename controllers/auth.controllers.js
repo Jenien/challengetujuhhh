@@ -41,16 +41,16 @@ module.exports = {
                 }
             });
 
-            // kirim email
-            let token = jwt.sign({ email: user.email }, JWT_SECRET_KEY);
-            let url = `http://localhost:3000/api/v1/auth/email-activation?token=${token}`;
+              // kirim email
+              let token = jwt.sign({ email: user.email }, JWT_SECRET_KEY);
+              let url = `http://localhost:3000/api/v1/auth/email-activation?token=${token}`;
 
-            const html = await nodemailer.getHtml('activation-email.ejs', { name, url });
-            nodemailer.sendEmail(email, 'Email Activation', html);
+              const html = await nodemailer.getHtml('activation-email.ejs', { name, url });
+              nodemailer.sendEmail(email, 'Email Activation', html);
 
-            return res.status(201).json({
+            res.json({
                 status: true,
-                message: 'Created',
+                message: 'Created accounyt',
                 err: null,
                 data: { user }
             });
@@ -87,7 +87,7 @@ module.exports = {
 
             return res.status(200).json({
                 status: true,
-                message: 'OK',
+                message: 'login ok',
                 err: null,
                 data: { user, token }
             });
@@ -160,6 +160,7 @@ module.exports = {
         next(err);
       }
     },
+    
 // Menampilkan halaman reset password
 showResetPasswordPage: (req, res) => {
   const { token } = req.params;
