@@ -25,5 +25,3 @@ Content-Type: application/json
   "email": "xenes38278@bikedid.com",
   "password": "oke"
 }
-###
-GET http://localhost:3000
