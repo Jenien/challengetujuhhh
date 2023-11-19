@@ -2,10 +2,10 @@ POST http://localhost:3000/api/v1/auth/register
 Content-Type: application/json
 
 {
-  "name":"njenien",
-  "email": "xenes38278@bikedid.com",
-  "password": "name",
-  "password_confirmation": "name"
+  "name":"",
+  "email": "",
+  "password": "",
+  "password_confirmation": ""
 }
 
 ###
@@ -14,7 +14,7 @@ POST http://localhost:3000/api/v1/auth/forgot-password
 Content-Type: application/json
 
 {
-    "email": "riska.jeen@gmail.com"
+    "email": ""
 }
 
 ###
@@ -22,6 +22,6 @@ POST http://localhost:3000/api/v1/auth/login
 Content-Type: application/json
 
 {
-  "email": "xenes38278@bikedid.com",
-  "password": "oke"
+  "email": "",
+  "password": ""
 }
