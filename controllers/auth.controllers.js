@@ -166,13 +166,14 @@ showResetPasswordPage: (req, res) => {
   res.render('reset-password-page', { token });
 },
 
+
 // Reset Password
 resetPassword: async (req, res, next) => {
   try {
     const { newPassword } = req.body;
     const token = req.query.token;
-    console.log('token=',token);
-    console.log('pass=',newPassword);
+    console.log('token :',token);
+    console.log('pass baru : ', newPassword);
     if (!token || !newPassword) {
       return res.status(400).json({
         status: false,
@@ -199,14 +200,14 @@ resetPassword: async (req, res, next) => {
 
     return res.status(200).json({
       status: true,
-      message: 'Password reset successfully',
+      message: 'Password updated successfully',
       err: null,
       data: null
     });
   } catch (err) {
     return res.status(400).json({
       status: false,
-      message: 'Error resetting password',
+      message: 'Error updating password',
       err: err.message,
       data: null
     });

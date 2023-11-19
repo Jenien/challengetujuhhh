@@ -23,7 +23,7 @@ Content-Type: application/json
 
 {
   "email": "xenes38278@bikedid.com",
-  "password": "oiya"
+  "password": "sip"
 }
 ###
 GET http://localhost:3000
