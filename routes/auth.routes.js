@@ -1,6 +1,5 @@
 const router = require('express').Router();
 const { register, login, activate, forgotPassword, resetPassword } = require('../controllers/auth.controllers');
-const { restrict } = require('../middlewares/auth.middlewares');
 
 router.get('/index', (req, res) => {
     res.render('index');
