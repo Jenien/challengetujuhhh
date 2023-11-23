@@ -2,19 +2,20 @@ POST http://localhost:3000/api/v1/auth/register
 Content-Type: application/json
 
 {
-  "name":"",
-  "email": "",
-  "password": "",
-  "password_confirmation": ""
+  "name":"juni",
+  "email": "soseho1817@bustayes.com",
+  "password": "pp",
+  "password_confirmation": "pp"
 }
 
 ###
   
-POST http://localhost:3000/api/v1/auth/forgot-password
+POST http://localhost:3000/api/v1/auth/activate-account
 Content-Type: application/json
 
 {
-    "email": ""
+    "email": "leseme4317@dpsols.com",
+    "otp":"hQBtaE"
 }
 
 ###
@@ -22,6 +23,6 @@ POST http://localhost:3000/api/v1/auth/login
 Content-Type: application/json
 
 {
-  "email": "",
-  "password": ""
+  "email": "leseme4317@dpsols.com",
+  "password": "pp",
 }
